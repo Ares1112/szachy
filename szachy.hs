@@ -28,10 +28,12 @@ charToBierka 'b' = Goniec
 charToBierka 'q' = Hetman
 charToBierka 'r' = Wieza
 
-wyswietlKol (SzachownicaKol k) = charToString(poleToString k)
+wyswietlKol (SzachownicaKol k) = [poleToString k]
 
 wyswietlRza (SzachownicaRza []) = "\n"
 wyswietlRza (SzachownicaRza (r:rs)) = wyswietlKol r ++ (wyswietlRza (SzachownicaRza rs))
+wyswietlRzedy [] = "\n"
+wyswietlRzedy(r:rs) = wyswietlRza r ++ wyswietlRzedy rs
 
 wyswietlSzachownica (Szachownica []) = "\n koniec \n"
 wyswietlSzachownica (Szachownica (s:ss)) =  wyswietlRza s ++ (wyswietlSzachownica (Szachownica ss))
@@ -46,6 +48,10 @@ przerobRzad (b:bb)
 		:przerobRzad(bb)
 	| isLower b = PoleGry (charToBierka b) Czarny
 		:przerobRzad (bb)
-
+przerobNaRza lst = SzachownicaRza $map SzachownicaKol lst  
+zwrocListeRzedow :: [String] -> [SzachownicaRza]
+zwrocListeRzedow [] = []
+zwrocListeRzedow (elem:lst) = przerobNaRza (przerobRzad elem)
+	:zwrocListeRzedow(lst) 
 charToString :: Char -> String
 charToString = (:[])
