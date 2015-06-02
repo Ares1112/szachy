@@ -55,8 +55,8 @@ przerobRzad (b:bb)
 		:przerobRzad (bb)
 	where b2 = toLower b
 
--- zmapuj rzazd na kol
-przerobNaRza lst = SzachownicaRza $map SzachownicaKol lst  
+-- zmapuj kol na rza
+przerobNaRza lst = SzachownicaRza $map SzachownicaKol lst 
 
 -- wez liste rzedow i zwroc pola gry
 zwrocListeRzedow :: [String] -> [SzachownicaRza]
@@ -65,13 +65,30 @@ zwrocListeRzedow (elem:lst) = przerobNaRza (przerobRzad elem)
 	:zwrocListeRzedow(lst) 
 
 -- zwroc szachownice
-zwrocSzach :: [SzachownicaRza] -> Szachownica
-zwrocSzach lsta = Szachownica(lsta)
+zwrocSzachownica :: [SzachownicaRza] -> Szachownica
+zwrocSzachownica lsta = Szachownica(lsta)
 
 -- usuwanie bierki
 usun :: Szachownica -> (Int, Int) -> Szachownica
-usun (Szachownica sz) (x,y) = (SzachownicaRza (sz!!x))!!y
+usun sz (x, y) = Szachownica (szachownicaUsun sz (x, y))
+-- pomocnicza funkcja do usuwania (rozklada szachownice)
+szachownicaUsun :: Szachownica -> (Int, Int) -> [SzachownicaRza]
+szachownicaUsun (Szachownica []) (_,_) = []
+szachownicaUsun (Szachownica (sz:s)) (x, y)
+	| (x == 0) = SzachownicaRza (rzadUsun sz y) : (szachownicaUsun (Szachownica s) ((x-1), y))
+	| otherwise = sz : (szachownicaUsun (Szachownica s) ((x-1), y))
+-- pomocnicza funkcja do usuwania (rozklada rzad)
+rzadUsun :: SzachownicaRza -> Int -> [SzachownicaKol]
+rzadUsun (SzachownicaRza []) _ = []
+rzadUsun (SzachownicaRza (r:rs)) n 
+	| (n == 0) = SzachownicaKol (PoleGry Pusta Bialy) : (rzadUsun (SzachownicaRza rs) (n-1))
+	| otherwise = r : (rzadUsun (SzachownicaRza rs) (n-1))
 
--- przeniesienie bierki
-{-przenies :: Szachownica -> (Int,Int) -> Szachownica
-przenies Szachownica sz (x,y) =  -}
+-- przeniesienie bierki (xskad, yskad) (xgdzie, ygdzie)
+{-przenies :: Szachownica -> (Int,Int) -> (Int,Int) -> Szachownica-}
+
+-- zwracanie bierki z pozycji (x,y)
+zwrocBierke :: Szachownica -> (Int, Int) -> SzachownicaKol
+zwrocBierke (Szachownica sz) (x,y) = pomocZwrocBierke (sz!!x) y
+pomocZwrocBierke :: SzachownicaRza -> Int -> SzachownicaKol
+pomocZwrocBierke (SzachownicaRza sr) y = sr!!y
