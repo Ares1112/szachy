@@ -1,12 +1,9 @@
+module Plansza where
+
 import Data.Char
 import Data.List.Split
-
-data Kolor = Bialy | Czarny deriving (Eq)
-data Bierka = Pusta | Krol | Hetman | Goniec | Skoczek | Wieza | Pion
-data PoleGry = Empty | PoleGry Bierka Kolor
-data SzachownicaKol = SzachownicaKol PoleGry
-data SzachownicaRza = SzachownicaRza [SzachownicaKol]
-data Szachownica = Szachownica [SzachownicaRza]
+import Narzedzia 
+import Typy
 
 poleToString (Empty) = '.'
 
@@ -64,9 +61,9 @@ zwrocListeRzedow [] = []
 zwrocListeRzedow (elem:lst) = przerobNaRza (przerobRzad elem)
 	:zwrocListeRzedow(lst) 
 
--- zwroc szachownice
-zwrocSzachownica :: [SzachownicaRza] -> Szachownica
-zwrocSzachownica lsta = Szachownica(lsta)
+-- zwroc szachownice ze stringa
+zwrocSzachownicaString :: String -> Szachownica
+zwrocSzachownicaString str = Szachownica(zwrocListeRzedow(zwrocRzedy(str)))
 
 -- usuwanie bierki
 usun :: Szachownica -> (Int, Int) -> Szachownica
@@ -85,10 +82,21 @@ rzadUsun (SzachownicaRza (r:rs)) n
 	| otherwise = r : (rzadUsun (SzachownicaRza rs) (n-1))
 
 -- przeniesienie bierki (xskad, yskad) (xgdzie, ygdzie)
-{-przenies :: Szachownica -> (Int,Int) -> (Int,Int) -> Szachownica-}
+przenies :: Szachownica -> (Int,Int) -> (Int,Int) -> Szachownica
+przenies sz (xs, ys) (xg, yg) = usun (przeniesPrzedUsun sz (xs, ys) (xg,yg)) (xs, ys)
+-- szachownica bez usunietej bierki
+przeniesPrzedUsun :: Szachownica -> (Int, Int) -> (Int, Int) -> Szachownica
+przeniesPrzedUsun sz (xs, ys) (xg, yg) = Szachownica (szachownicaPrzenies sz sz (xs, ys) (xg, yg))
+-- pomocnicza funkcja do przenoszenia (rozklada szachownice), potrzebne 2 szachownice bo z drugiej bierze jaka bierke wstawic
+szachownicaPrzenies :: Szachownica -> Szachownica -> (Int, Int) -> (Int, Int) -> [SzachownicaRza]
+szachownicaPrzenies (Szachownica []) _ (_,_) (_,_) = []
+szachownicaPrzenies (Szachownica (sz:s)) sz2 (xs, ys) (xg, yg)
+	| (xg == 0) = SzachownicaRza (rzadPrzenies sz (sz2) (xs,ys) yg) : (szachownicaPrzenies (Szachownica s) sz2 (xs,ys) ((xg-1), yg))
+	| otherwise = sz : (szachownicaPrzenies (Szachownica s) sz2 (xs,ys) ((xg-1), yg))
+-- pomocnicza funkcja do przenoszenia (rozklada rzad)
+rzadPrzenies :: SzachownicaRza -> Szachownica -> (Int, Int) -> Int -> [SzachownicaKol]
+rzadPrzenies (SzachownicaRza []) _ (_,_) _ = []
+rzadPrzenies (SzachownicaRza (r:rs)) sz (xs, ys) n 
+	| (n == 0) = zwrocBierke sz (xs, ys) : (rzadPrzenies (SzachownicaRza rs) sz (xs,ys) (n-1))
+	| otherwise = r : (rzadPrzenies (SzachownicaRza rs) sz (xs, ys) (n-1))
 
--- zwracanie bierki z pozycji (x,y)
-zwrocBierke :: Szachownica -> (Int, Int) -> SzachownicaKol
-zwrocBierke (Szachownica sz) (x,y) = pomocZwrocBierke (sz!!x) y
-pomocZwrocBierke :: SzachownicaRza -> Int -> SzachownicaKol
-pomocZwrocBierke (SzachownicaRza sr) y = sr!!y
