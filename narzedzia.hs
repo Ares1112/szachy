@@ -15,7 +15,7 @@ pobierzKolor (PoleGry _ k) = k
 sprawdzCzyZajete :: SzachownicaKol -> Kolor -> Bool
 sprawdzCzyZajete (SzachownicaKol p) k = ((p == PoleGry Krol Bialy) || (p == PoleGry Krol Czarny) || (pobierzKolor(p) == k)) && not (p == PoleGry Pusta Czarny)
 sprawdzCzyZbil :: SzachownicaKol -> Kolor -> Bool
-sprawdzCzyZbil (SzachownicaKol sk) k = (not (pobierzKolor(sk) == k)) && not (sk == PoleGry Pusta Czarny)
+sprawdzCzyZbil (SzachownicaKol sk) k = (not (pobierzKolor(sk) == k)) && not (sk == PoleGry Pusta Czarny) && not ((sk == PoleGry Krol Bialy) || (sk == PoleGry Krol Czarny))
 sprawdzCzyPlansza :: (Int, Int) -> Bool
 sprawdzCzyPlansza (x, y) = (x < 8 && x > -1 && y < 8 && y > -1)
 
