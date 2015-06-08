@@ -97,4 +97,13 @@ rzadPrzenies (SzachownicaRza []) _ (_,_) _ = []
 rzadPrzenies (SzachownicaRza (r:rs)) sz (xs, ys) n 
 	| (n == 0) = zwrocBierke sz (xs, ys) : (rzadPrzenies (SzachownicaRza rs) sz (xs,ys) (n-1))
 	| otherwise = r : (rzadPrzenies (SzachownicaRza rs) sz (xs, ys) (n-1))
+--walidacja
+waliduj :: Szachownica -> Kolor -> Int
+waliduj sz k = walidujRet sz k (0, 0)
+walidujRet :: Szachownica -> Kolor -> (Int, Int) -> Int
+walidujRet _ _ (_, 8) = 0
+walidujRet sz k (x, y)
+        | x < 8 && pobierzKolor(zwrocPoleGry(zwrocBierke sz (x,y))) == k = bierkaWartosc(pobierzBierka(zwrocPoleGry(zwrocBierke sz (x,y)))) + walidujRet sz k (x+1, y)
+        | x == 8 = walidujRet sz k (0, y+1)
+	| otherwise = walidujRet sz k (x+1, y)
 

@@ -7,9 +7,16 @@ zwrocBierke (Szachownica sz) (x,y) = pomocZwrocBierke (sz!!x) y
 pomocZwrocBierke :: SzachownicaRza -> Int -> SzachownicaKol
 pomocZwrocBierke (SzachownicaRza sr) y = sr!!y
 
+zwrocPoleGry :: SzachownicaKol -> PoleGry
+zwrocPoleGry (SzachownicaKol sk) = sk
+
 -- pobranie koloru z PoleGry
 pobierzKolor :: PoleGry -> Kolor
 pobierzKolor (PoleGry _ k) = k 
+
+-- pobranie bierki z PoleGry
+pobierzBierka :: PoleGry -> Bierka
+pobierzBierka (PoleGry b _) = b
 
 -- sprawdzanie czy ruch jest mozliwy 
 sprawdzCzyZajete :: SzachownicaKol -> Kolor -> Bool
@@ -23,4 +30,7 @@ sprawdzCzyPlansza (x, y) = (x < 8 && x > -1 && y < 8 && y > -1)
 merge [] ys = ys
 merge (x:xs) ys = x:merge ys xs
 
+-- odfiltruj puste Szachownica w liscie
 odfiltrujPuste lst = filter(\x -> x/=Szachownica []) lst
+
+

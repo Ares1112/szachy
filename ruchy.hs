@@ -2,17 +2,21 @@ module Ruchy where
 import Typy
 import Narzedzia
 import Plansza
+import Data.List
+
+ruszWszystko :: Szachownica -> Kolor -> [Szachownica]
+ruszWszystko sz k = --TODO
 
 -- ruch hetmana
 ruszHetmana :: Szachownica -> Kolor -> (Int, Int) -> [Szachownica]
-ruszHetmana sz k (x, y) = odfiltrujPuste(
-	merge (merge (merge (ruszLewoRet sz k (x, y)) (ruszPrawoRet sz k (x, y))) (merge (ruszDolRet sz k (x, y)) (ruszGoraRet sz k (x, y)))) (ruszSkosRet sz k (x, y))
+ruszHetmana sz k (x, y) = odfiltrujPuste( 
+	ruszLewoRet sz k (x, y) ++ ruszPrawoRet sz k (x, y) ++ ruszDolRet sz k (x, y) ++ ruszGoraRet sz k (x, y) ++ ruszSkosRet sz k (x, y)
 	)
 	
 -- ruch wiezy
 ruszWieze :: Szachownica -> Kolor -> (Int, Int) -> [Szachownica]
 ruszWieze sz k (x, y) = odfiltrujPuste(
-	merge (merge (ruszLewoRet sz k (x, y)) (ruszPrawoRet sz k (x, y))) (merge (ruszDolRet sz k (x, y)) (ruszGoraRet sz k (x, y)))
+	ruszLewoRet sz k (x, y) ++ ruszPrawoRet sz k (x, y) ++ ruszDolRet sz k (x, y) ++ ruszGoraRet sz k (x, y)
 	)
 	
 -- ruch gonca

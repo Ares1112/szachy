@@ -14,3 +14,13 @@ instance Eq SzachownicaRza where
 data Szachownica = Szachownica [SzachownicaRza]
 instance Eq Szachownica where
 	(Szachownica r) == (Szachownica r2) = (r == r2)
+
+-- wartosci
+bierkaWartosc :: Bierka -> Int
+bierkaWartosc Pion = 100
+bierkaWartosc Hetman = 1000
+bierkaWartosc Skoczek = 350
+bierkaWartosc Goniec = 350
+bierkaWartosc Wieza = 525
+bierkaWartosc Krol = 10000
+bierkaWartosc Pusta = 0
