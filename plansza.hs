@@ -36,7 +36,7 @@ wyswietlSzachownica (Szachownica (s:ss)) =  wyswietlRza s ++ (wyswietlSzachownic
 instance Show Szachownica where
 	show a = wyswietlSzachownica a
 
-plansza = "rnbqkbnr\npppppppp\n........\n........\n........\n........\nPPPPPPPP\nRNBQKBNR"  
+plansza = "rnbqkbnr\npppppppp\n.B......\n........\n........\n........\nPPPPPPPP\nRNBQKBNR"  
 -- zrob split, zwroc liste stringow
 zwrocRzedy (wejscie) = splitOn "\n" wejscie 
 

@@ -1,7 +1,7 @@
 module Typy where
 
-data Kolor = Bialy | Czarny deriving (Eq)
-data Bierka = Pusta | Krol | Hetman | Goniec | Skoczek | Wieza | Pion deriving (Eq)
+data Kolor = Bialy | Czarny deriving (Eq, Show)
+data Bierka = Pusta | Krol | Hetman | Goniec | Skoczek | Wieza | Pion deriving (Eq, Show)
 data PoleGry = PoleGry Bierka Kolor
 instance Eq PoleGry where
 	(PoleGry b1 k1) == (PoleGry b2 k2) = (b1==b2) && (k1==k2)

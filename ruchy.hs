@@ -2,10 +2,23 @@ module Ruchy where
 import Typy
 import Narzedzia
 import Plansza
-import Data.List
 
 ruszWszystko :: Szachownica -> Kolor -> [Szachownica]
-ruszWszystko sz k = --TODO
+ruszWszystko sz k = odfiltrujPuste(ruszRet sz k (0, 0))
+ruszRet _ _ (_, 8) = [Szachownica []]
+ruszRet sz k (x, y)
+        | x < 8 && pobierzKolor(zwrocPoleGry(zwrocBierke sz (x,y))) == k = ruszRetBierka sz (zwrocPoleGry(zwrocBierke sz (x,y))) (x, y) ++ ruszRet sz k (x+1, y)
+        | x == 8 = ruszRet sz k (0, y+1)
+		| otherwise = ruszRet sz k (x+1, y)
+ruszRetBierka :: Szachownica -> PoleGry -> (Int, Int) -> [Szachownica]
+ruszRetBierka sz pg (x, y)
+	| pobierzBierka(pg) == Hetman = ruszHetmana sz (pobierzKolor pg) (x, y) 
+	| pobierzBierka(pg) == Wieza = ruszWieze sz (pobierzKolor pg) (x, y) 
+	| pobierzBierka(pg) == Goniec = ruszGonca sz (pobierzKolor pg) (x, y) 
+	| pobierzBierka(pg) == Skoczek = ruszSkoczka sz (pobierzKolor pg) (x, y) 
+	| pobierzBierka(pg) == Pion = ruszPiona sz (pobierzKolor pg) (x, y) 
+	| pobierzBierka(pg) == Krol = ruszKrola sz (pobierzKolor pg) (x, y) 
+	| otherwise = [Szachownica []]
 
 -- ruch hetmana
 ruszHetmana :: Szachownica -> Kolor -> (Int, Int) -> [Szachownica]
@@ -44,17 +57,21 @@ ruszPionaBialego :: Szachownica -> (Int, Int) -> [Szachownica]
 ruszPionaBialego sz (x, y)
 	| not (sprawdzCzyPlansza (x-1, y)) = [Szachownica []]
 	| sprawdzCzyZajete (zwrocBierke sz (x-1, y)) Bialy = [Szachownica []]
+	| sprawdzCzyZajete (zwrocBierke sz (x-1, y)) Czarny = [Szachownica []]
 	| (y+1 < 7) && sprawdzCzyZbil (zwrocBierke sz (x-1, y+1)) Bialy = [(przenies sz (x, y) (x-1, y+1))]
 	| (y-1 > 0) && sprawdzCzyZbil (zwrocBierke sz (x-1, y-1)) Bialy = [(przenies sz (x, y) (x-1, y-1))]
-	| not (sprawdzCzyZajete (zwrocBierke sz (x-2, y)) Bialy) && (x == 6) = (przenies sz (x, y) (x-1, y)) : (przenies sz (x, y) (x-2, y)) : []
+	| not (sprawdzCzyZajete (zwrocBierke sz (x-2, y)) Bialy) && not (sprawdzCzyZajete (zwrocBierke sz (x-2, y)) Czarny) && (x == 6) 
+	= (przenies sz (x, y) (x-1, y)) : (przenies sz (x, y) (x-2, y)) : []
 	| otherwise = [(przenies sz (x, y) (x-1, y))]
 ruszPionaCzarnego :: Szachownica -> (Int, Int) -> [Szachownica]
 ruszPionaCzarnego sz (x, y)
 	| not (sprawdzCzyPlansza (x+1, y)) = [Szachownica []]
 	| sprawdzCzyZajete (zwrocBierke sz (x+1, y)) Czarny = [Szachownica []]
-	| sprawdzCzyZbil (zwrocBierke sz (x+1, y+1)) Czarny && y+1 < 7 = [(przenies sz (x, y) (x+1, y+1))]
-	| sprawdzCzyZbil (zwrocBierke sz (x+1, y-1)) Czarny && y-1 > 0 = [(przenies sz (x, y) (x+1, y-1))]
-	| not (sprawdzCzyZajete (zwrocBierke sz (x+2, y)) Czarny) && (x == 1) = (przenies sz (x, y) (x+1, y)) : (przenies sz (x, y) (x+2, y)) : []
+	| sprawdzCzyZajete (zwrocBierke sz (x+1, y)) Bialy = [Szachownica []]
+	| y+1 < 7 && sprawdzCzyZbil (zwrocBierke sz (x+1, y+1)) Czarny = [(przenies sz (x, y) (x+1, y+1))]
+	| y-1 > 0 && sprawdzCzyZbil (zwrocBierke sz (x+1, y-1)) Czarny = [(przenies sz (x, y) (x+1, y-1))]
+	| not (sprawdzCzyZajete (zwrocBierke sz (x+2, y)) Czarny) && not (sprawdzCzyZajete (zwrocBierke sz (x+2, y)) Bialy) && (x == 1) = 
+	(przenies sz (x, y) (x+1, y)) : (przenies sz (x, y) (x+2, y)) : []
 	| otherwise = [(przenies sz (x, y) (x+1, y))]
 	
 -- ruch króla, dorobić obsługę szacha
