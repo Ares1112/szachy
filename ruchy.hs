@@ -2,7 +2,7 @@ module Ruchy where
 import Typy
 import Narzedzia
 import Plansza
-
+-- lista wszystkich ruchow bierek
 ruszWszystko :: Szachownica -> Kolor -> [Szachownica]
 ruszWszystko sz k = odfiltrujPuste(ruszRet sz k (0, 0))
 ruszRet _ _ (_, 8) = [Szachownica []]

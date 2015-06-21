@@ -1,5 +1,7 @@
 module Narzedzia where 
 import Typy
+import Text.Parsec.Char
+import Text.ParserCombinators.Parsec
 
 -- zwracanie bierki (szachownicaKol) z pozycji (x,y)
 zwrocBierke :: Szachownica -> (Int, Int) -> SzachownicaKol
@@ -7,6 +9,7 @@ zwrocBierke (Szachownica sz) (x,y) = pomocZwrocBierke (sz!!x) y
 pomocZwrocBierke :: SzachownicaRza -> Int -> SzachownicaKol
 pomocZwrocBierke (SzachownicaRza sr) y = sr!!y
 
+-- zwracanie PoleGry z SzachownicaKol
 zwrocPoleGry :: SzachownicaKol -> PoleGry
 zwrocPoleGry (SzachownicaKol sk) = sk
 
@@ -33,4 +36,18 @@ merge (x:xs) ys = x:merge ys xs
 -- odfiltruj puste Szachownica w liscie
 odfiltrujPuste lst = filter(\x -> x/=Szachownica []) lst
 
+-- ACN, parser
+parseLitera :: Parser Char
+parseLitera = oneOf "abcdefgh"
+
+parseLiczba :: Parser Char
+parseLiczba = oneOf "12345678"
+
+parseACN :: Parser ACN
+parseACN = do
+          x1 <- parseLitera
+          y1 <- parseLiczba
+          x2 <- parseLitera
+          y2 <- parseLiczba
+          return $ ACN (x1,y1,x2,y2)
 

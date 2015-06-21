@@ -35,8 +35,7 @@ wyswietlSzachownica (Szachownica (s:ss)) =  wyswietlRza s ++ (wyswietlSzachownic
 
 instance Show Szachownica where
 	show a = wyswietlSzachownica a
-
-plansza = "rnbqkbnr\npppppppp\n.B......\n........\n........\n........\nPPPPPPPP\nRNBQKBNR"  
+	
 -- zrob split, zwroc liste stringow
 zwrocRzedy (wejscie) = splitOn "\n" wejscie 
 
@@ -97,9 +96,11 @@ rzadPrzenies (SzachownicaRza []) _ (_,_) _ = []
 rzadPrzenies (SzachownicaRza (r:rs)) sz (xs, ys) n 
 	| (n == 0) = zwrocBierke sz (xs, ys) : (rzadPrzenies (SzachownicaRza rs) sz (xs,ys) (n-1))
 	| otherwise = r : (rzadPrzenies (SzachownicaRza rs) sz (xs, ys) (n-1))
---walidacja
+--walidacja (wartosc planszy)
 waliduj :: Szachownica -> Kolor -> Int
-waliduj sz k = walidujRet sz k (0, 0)
+waliduj sz k
+	| k == Bialy = -walidujRet sz k (0, 0)
+	| otherwise = walidujRet sz k (0, 0)
 walidujRet :: Szachownica -> Kolor -> (Int, Int) -> Int
 walidujRet _ _ (_, 8) = 0
 walidujRet sz k (x, y)
